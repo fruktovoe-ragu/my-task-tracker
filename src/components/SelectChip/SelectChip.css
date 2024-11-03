@@ -1,0 +1,71 @@
+.select-chip__trigger {
+    background: #EAEAEA;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    height: 28px;
+    padding: 0 12px;
+    min-width: 78px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.select-chip__trigger::before,
+.select-chip__item::before {
+    background: transparent;
+    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1) 0.03s;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+} 
+
+.select-chip__trigger:hover.select-chip__trigger::before,
+.select-chip__item:hover.select-chip__item::before {
+    background: rgba(0, 0, 0, 0.07);
+  }
+.select-chip__trigger:active.select-chip__trigger::before,
+.select-chip__item:active.select-chip__item::before {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.select-chip__item-container {
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 12px;
+}
+
+.select-chip__icon {
+    display: flex;
+}
+
+.select-chip__item {
+    position: relative;
+    overflow: hidden;
+}
+.select-chip__item[data-state="checked"] {
+    opacity: 0;
+}
+
+.select-chip__item_theme_todo, .select-chip__trigger_theme_todo {
+    background: #FFDDDD;
+}
+.select-chip__item_theme_doing, .select-chip__trigger_theme_doing {
+    background: #D4EFFF;
+}
+.select-chip__item_theme_done, .select-chip__trigger_theme_done {
+    background: #D2FFD2;
+}
+
+.select-chip__content {
+    position: relative;
+    z-index: 5;
+}

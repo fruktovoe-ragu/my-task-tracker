@@ -1,0 +1,38 @@
+.text-field {
+    position: relative;
+}
+
+.text-field_textarea {
+    flex-grow: 1;
+}
+
+.text-field__input {
+    border-radius: 8px;
+    border: 1px solid #101D46;
+    box-sizing: border-box;
+    height: 32px;
+    padding-left: 12px;
+}
+
+.text-field__textarea {
+    border-radius: 8px;
+    border: 1px solid #101D46;
+    box-sizing: border-box;
+    display: block;
+    min-height: 32px;
+    field-sizing: content;
+    overflow-x: hidden;
+    resize: none;
+    padding: 6px 12px;
+    width: 100%;
+}
+
+.text-field__delete-button {
+    border-radius: 4px;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 24px;
+}

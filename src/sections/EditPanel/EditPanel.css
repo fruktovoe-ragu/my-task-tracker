@@ -1,0 +1,13 @@
+.edit-panel {
+    width: 100%;
+}
+
+.edit-panel__form {
+    display: flex;
+    gap: 16px;
+}
+
+.edit-panel__actions-container {
+    display: flex;
+    gap: 12px;
+}
