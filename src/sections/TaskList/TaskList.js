@@ -101,6 +101,9 @@ const TaskList = ({
         <div className={b('head-inner')}>
             <h2 className={b('title')}>{listName}</h2>
             <div className={b('actions-container')}>
+                <Button onClick={handleEditListClick}>
+                    <EditIcon />
+                </Button>
                 {!isMobile &&
                     <Button
                         theme='primary'
@@ -110,9 +113,6 @@ const TaskList = ({
                         New task
                     </Button>
                 }
-                <Button onClick={handleEditListClick}>
-                    <EditIcon />
-                </Button>
             </div>
         </div>
     );
