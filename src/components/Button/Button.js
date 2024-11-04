@@ -1,13 +1,14 @@
 import React from 'react';
-import { cnCreate } from '@megafon/ui-helpers';
+import { block } from 'bem-cn';
 import './Button.css';
 
-const cn = cnCreate('button');
+const b = block('button');
 const Button = ({
     className = '',
     disabled,
     children,
     onClick,
+    isCentered,
     theme = 'secondary',
 }) => {
     const handleClick = React.useCallback(e => {
@@ -23,14 +24,15 @@ const Button = ({
     return (
         <button
             type="button"
-            className={cn({
+            className={b({
                 disabled,
-                theme
-            }, className)}
+                theme,
+                centered: isCentered,
+            }).mix(className)}
             onClick={handleClick}
             disabled={disabled}
         >
-            <div className={cn('inner')}>
+            <div className={b('inner')}>
                 {children}
             </div>
         </button>

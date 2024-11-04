@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { cnCreate } from '@megafon/ui-helpers';
-import PlusIcon from "./icons/plus";
+import React, { useState, useEffect } from 'react';
+import { block } from 'bem-cn';
+import AppContext from './context/AppContext';
 import Header from './sections/Header/Header';
-import EditPanel from "./sections/EditPanel/EditPanel";
-import TaskList from "./sections/TaskList/TaskList";
-import Button from "./components/Button/Button";
+import Main from './sections/Main/Main';
 import './App.css';
 
 export const statuses = [
@@ -20,7 +18,7 @@ export const statuses = [
   }
 ];
 
-const cn = cnCreate('task-tracker-app');
+const b = block('task-tracker-app');
 const App = () => {
   const [taskLists, setTaskLists] = useState(() => {
     const savedTaskLists = localStorage.getItem("taskLists");
@@ -56,20 +54,20 @@ const App = () => {
   };
 
   const handleFilterChipClick = value => {
-    setChosenStatusId(value);
+    setChosenStatusId(prevValue => (prevValue === value ? '' : value));
   };
 
   // List handlers
   // Start
-  const handleCreateListClick = (newList) => () => {
-    newList === 'newList' && setEditingListId(0);
+  const handleCreateListClick = () => {
+    setEditingListId(0);
     setEditingTaskId(null);
-  }
+  };
 
   const handleEditListClick = listId => {
     setEditingListId(listId);
     setEditingTaskId(null);
-  }
+  };
 
   const handleSubmitListClick = (content, id) => {
     setTaskLists((prevLists) => {
@@ -81,6 +79,7 @@ const App = () => {
       const listUpdates = {
         listName: content,
       }
+
       return updateEntityArr(prevLists, id, newList, listUpdates);
     });
     setEditingListId(null);
@@ -93,38 +92,39 @@ const App = () => {
     localStorage.setItem("taskLists", JSON.stringify(updatedTaskLists));
   };
 
-  const handleCancelCreateListClick = () => {
+  const handleCancelListClick = () => {
     setEditingListId(null);
-  }
+  };
   // End
 
   // Task handlers
   // Start
-  const handleCreateTaskClick = (newTask) => {
-    newTask === 'newTask' && setEditingTaskId(0);
+  const handleCreateTaskClick = (newTask, listId) => {
+    newTask === 'newTask' && setEditingTaskId(listId);
     setEditingListId(null);
-  }
+  };
 
   const handleEditTaskClick = taskId => {
     setEditingTaskId(taskId);
     setEditingListId(null);
   };
 
-  const handleCancelCreateTaskClick = () => {
+  const handleCancelTaskClick = () => {
     setEditingTaskId(null);
   };
 
   const handleSubmitTaskClick = (content, taskId, date, listId) => {
     const newTask = {
+      status: statuses[0].value,
       description: content,
       id: taskId,
       date: date,
-    }
+    };
 
     const taskUpdates = {
       description: content,
       date: date,
-    }
+    };
 
     setTaskLists((prevLists) => {
       return prevLists.map((list) => {
@@ -152,85 +152,53 @@ const App = () => {
     });
     localStorage.setItem("taskLists", JSON.stringify(updatedTaskLists));
   };
+
+  const handleTaskStatusChange = (value, taskId, listId) => {
+    const taskUpdates = {
+      status: value,
+    };
+
+    setTaskLists((prevLists) => {
+      return prevLists.map((list) => {
+        if (list.id === listId) {
+          return {
+            ...list,
+            tasksList: updateEntityArr(list.tasksList, taskId, {}, taskUpdates),
+          };
+        }
+        return list;
+      })
+    });
+  };
   // End
 
-  const renderListContainer = () => (
-    <div className={cn('lists-container')}>
-      {taskLists.map((list) => (
-          <TaskList
-            key={list.id}
-            editingListId={editingListId}
-            editingTaskId={editingTaskId}
-            taskListData={list}
-            onEditListClick={handleEditListClick}
-            onCancelListClick={handleCancelCreateListClick}
-            onSubmitListClick={handleSubmitListClick}
-            onDeleteListClick={handleDeleteListClick}
-            onCreateTaskClick={handleCreateTaskClick}
-            onEditTaskClick={handleEditTaskClick}
-            onCancelTaskClick={handleCancelCreateTaskClick}
-            onSubmitTaskClick={handleSubmitTaskClick}
-            onDelteTaskClick={handleDeleteTaskClick}
-          />
-        ))}
-        <div className={cn('future-list-container', { 'edit-mode': editingListId === 0 })}>
-          <EditPanel
-            onSubmitClick={handleSubmitListClick}
-            onCancelClick={handleCancelCreateListClick}
-            editingEntityId={editingListId}
-            isEditMode={editingListId === 0}
-            type="list"
-          >
-            <Button
-              className={cn('create-list-button')}
-              theme='wide'
-              onClick={handleCreateListClick('newList')}
-            >
-              <PlusIcon /> 
-              Task list
-            </Button>
-          </EditPanel>
-        </div>
-    </div>
-  );
-
   return (
-    <div className={cn('')}>
-      <Header
-        onCreateTaskList={handleCreateListClick('newList')}
-        onFilterChipClick={handleFilterChipClick}
-        chosenStatus={chosenStatusId}
-      />
-      <main className={cn('main')}>
-        {!taskLists.length ?
-          <div className={cn('empty-state-container', { 'edit-mode': editingListId === 0 })}>
-            {editingListId === 0 && <h2 className={cn('title')}>Create your first task list</h2>}
-            <EditPanel
-              onSubmitClick={handleSubmitListClick}
-              onCancelClick={handleCancelCreateListClick}
-              isEditMode={editingListId === 0}
-            >
-              <div className={cn('empty-state')}>
-                <div className={cn('empty-state-content')}>
-                  <h2 className={cn('empty-state-title')}>Get started on your productivity journey!</h2>
-                  <p className={cn('empty-state-text')}>
-                    Create your first task list to begin tracking and organizing your tasks.
-                  </p>
-                </div>
-                <Button
-                  className={cn('empty-state-button')}
-                  theme='primary'
-                  onClick={handleCreateListClick('newList')}>
-                    <PlusIcon fill="#FFFFFF" />
-                    Task list
-                </Button>
-              </div> 
-            </EditPanel>
-          </div> :
-          renderListContainer()
-        }
-      </main>
-    </div>
+    <AppContext>
+      <div className={b()}>
+        <Header
+          chosenStatus={chosenStatusId}
+          onCreateTaskList={handleCreateListClick}
+          onFilterChipClick={handleFilterChipClick}
+        />
+        <Main 
+          taskLists={taskLists}
+          editingListId={editingListId}
+          editingTaskId={editingTaskId}
+          chosenStatusId={chosenStatusId}
+          onTaskStatusChange={handleTaskStatusChange}
+          onCreateListClick={handleCreateListClick}
+          onEditListClick={handleEditListClick}
+          onCancelListClick={handleCancelListClick}
+          onSubmitListClick={handleSubmitListClick}
+          onDeleteListClick={handleDeleteListClick}
+          onCreateTaskClick={handleCreateTaskClick}
+          onEditTaskClick={handleEditTaskClick}
+          onCancelTaskClick={handleCancelTaskClick}
+          onSubmitTaskClick={handleSubmitTaskClick}
+          onDeleteTaskClick={handleDeleteTaskClick}
+        />
+      </div>
+    </AppContext>
   );
 }
 

@@ -1,6 +1,11 @@
+.select-chip_disabled {
+    pointer-events: none;
+}
+
 .select-chip__trigger {
     background: #EAEAEA;
     border-radius: 20px;
+    color: #101D46;
     font-size: 16px;
     font-weight: 500;
     height: 28px;
@@ -8,6 +13,7 @@
     min-width: 78px;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
 }
 
@@ -50,6 +56,7 @@
 .select-chip__item {
     position: relative;
     overflow: hidden;
+    z-index: 100;
 }
 .select-chip__item[data-state="checked"] {
     opacity: 0;

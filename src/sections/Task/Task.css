@@ -1,0 +1,132 @@
+.task {
+    border-top: 1px solid #DBDBDD;
+    display: flex;
+    align-items: center;
+    min-height: 60px;
+}
+
+.task:last-child {
+    border-bottom: 1px solid #DBDBDD;
+}
+
+.task__edit-panel {
+    padding: 12px 0;
+}
+
+.task__inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-grow: 1; 
+    align-self: stretch;
+    min-height: 60px;
+}
+
+.task__status-container {
+    border-right: 1px solid #DBDBDD;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 116px;
+    width: 116px;
+}
+
+.task__description-container {
+    border-right: 1px solid #DBDBDD;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    height: 100%;
+    padding: 12px 0;
+}
+
+.task__date-container {
+    border-right: 1px solid #DBDBDD;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 100px;
+    width: 100px;
+}
+
+.task__actions-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+    min-width: 32px;
+    width: 32px;
+}
+
+.task__date {
+    color: #808080;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+    .task, .task:last-child {
+        border: none;
+    }
+
+    .task:not(:last-child) {
+        margin-bottom: 8px;
+    }
+
+    .task__mobile-preview {
+        background: #f8f7f7;
+        border-radius: 12px;
+        box-sizing: border-box;
+        padding: 12px 12px;
+        width: 100%;
+    }
+
+    .task__bottom-section {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .task__status-container {
+        border-right: none;
+        min-width: 0;
+        width: auto;
+    }
+
+    .task__date-container {
+        border-right: none;
+        flex-grow: 1;
+    }
+
+    .task__description-container {
+        border-right: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .task__mobile-preview .task__description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+    }
+
+    .task__mobile-full-view {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+        width: 100%;
+    }
+
+    .task__mobile-full-view .task__bottom-section {
+        border-top: 1px solid #DBDBDD;
+        padding-top: 12px;
+    }
+
+    .task__mobile-full-view .task__description-container {
+        flex-grow: 1;
+        align-items: flex-start;
+    }
+}

@@ -1,26 +1,9 @@
 .task-tracker-app__main {
-  padding: 0 60px 60px;
+  padding: 0 62px 62px;
 }
 
 .task-tracker-app__title {
   margin-bottom: 12px;
-}
-
-.task-tracker-app__empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding-top: 32px;
-}
-
-.task-tracker-app__empty-state-title {
-  text-align: center;
-  margin-bottom: 8px;
-}
-
-.task-tracker-app__empty-state-text {
-  text-align: center;
 }
 
 .task-tracker-app__lists-container {
@@ -29,27 +12,18 @@
   gap: 16px;
 }
 
-.task-tracker-app__future-list-container {
-  border-radius: 12px;
-  background: #FFFFFF;
-  height: 50px;
-  display: flex;
-  align-items: center;
-}
-
-.task-tracker-app__future-list-container_edit-mode {
-  padding: 0 24px;
-}
-
-.task-tracker-app__empty-state-container {
-  background: transparent;
-}
-
-.task-tracker-app__empty-state-container_edit-mode {
+.task-tracker-app__create-new-list-container {
   border-radius: 12px;
   background: #FFFFFF;
   padding: 16px 24px;
-  margin: 0 16px;
+}
+
+.task-tracker-app__future-list-container {
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #FFFFFF;
+  height: 50px;
+  padding: 8px 24px;
 }
 
 .task-tracker-app__create-list-button {
@@ -58,4 +32,24 @@
 
 .task-tracker-app__create-list-button:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .task-tracker-app__main {
+    padding: 0 24px 24px;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .task-tracker-app__main {
+    padding: 0 12px 12px;
+  }
+
+  .task-tracker-app__lists-container {
+    gap: 8px;
+  }
+
+  .task-tracker-app__future-list-container {
+    padding: 8px 8px;
+  }
 }

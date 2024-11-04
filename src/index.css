@@ -366,9 +366,19 @@ button, h1, h2, h3, h4, h5, p {
 h1 {
   font-size: 20px;
   font-weight: 600;
+  line-height: 28px;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 26px;
+  }
 }
 
 h2 {
   font-size: 16px;
   font-weight: 600;
+  line-height: 24px;
 }

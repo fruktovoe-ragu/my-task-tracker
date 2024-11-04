@@ -12,6 +12,8 @@
     box-sizing: border-box;
     height: 32px;
     padding-left: 12px;
+    padding-right: 44px;
+    width: 100%;
 }
 
 .text-field__textarea {
@@ -23,16 +25,16 @@
     field-sizing: content;
     overflow-x: hidden;
     resize: none;
-    padding: 6px 12px;
+    padding: 6px 44px 6px 12px;
     width: 100%;
 }
 
 .text-field__delete-button {
+    background: #FFFFFF;
     border-radius: 4px;
     position: absolute;
     right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 4px;
     height: 24px;
     width: 24px;
 }

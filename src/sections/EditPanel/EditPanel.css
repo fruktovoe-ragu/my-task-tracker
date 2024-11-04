@@ -7,7 +7,47 @@
     gap: 16px;
 }
 
+.edit-panel__textfield-container_type_task {
+    flex-grow: 1;
+}
+
 .edit-panel__actions-container {
     display: flex;
     gap: 12px;
+}
+
+.edit-panel__cancel-button {
+    padding: 0 12px;
+}
+
+.edit-panel__delete-button {
+    background: #CA3737;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+    .edit-panel_mobile .edit-panel__form {
+        box-sizing: border-box;
+        padding: 8px;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .edit-panel_mobile .edit-panel__textfield-container {
+        flex-grow: 1;
+    }
+
+    .edit-panel_mobile .edit-panel__actions-container {
+        border-top: 1px solid #DBDBDD;
+        padding-top: 12px;
+    }
+
+    .edit-panel_mobile .edit-panel__cancel-button {
+        order: 2;
+        flex-grow: 1;
+    }
+
+    .edit-panel_mobile .edit-panel__save-button {
+        order: 3;
+        flex-grow: 1;
+    }
 }

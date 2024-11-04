@@ -7,8 +7,7 @@
     background-color: #414B6A; 
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 12px 84px;
+    padding: 12px 86px;
 }
 
 .header__title {
@@ -22,7 +21,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 84px;
+    padding: 16px 86px;
     border-bottom: 1px solid #DBDBDD;
 }
 
@@ -41,7 +40,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 0 84px;
+    padding: 0 86px;
 }
 
 .header__legend-container p {
@@ -68,5 +67,38 @@
 }
 
 .header__actions {
-    width: 76px;
+    width: 32px;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .header__title-container {
+      padding: 12px 48px;
+    }
+
+    .header__application-bar {
+        padding: 16px 48px;
+    }
+
+    .header__legend-container {
+        padding: 0 48px;
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+    .header {
+        margin-bottom: 12px;
+    }
+
+    .header__title-container {
+        padding: 12px 12px;
+    }
+
+    .header__application-bar {
+        padding: 16px 12px;
+    }
+
+    .header__filters {
+        gap: 8px;
+        margin-left: 12px;
+    }
 }

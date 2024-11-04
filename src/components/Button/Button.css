@@ -1,8 +1,11 @@
 .button, button {
+    display: flex;
+    align-items: center;
     cursor: pointer;
     border: none;
     position: relative;
     overflow: hidden;
+    min-width: 32px;
 }
   
 .button::before, button::before {
@@ -16,8 +19,14 @@
     bottom: 0;
 } 
 
+.button_centered .button__inner {
+    justify-content: center;
+    text-align: center;
+    flex-grow: 1;
+}
+
 .button__inner {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     position: relative;
     z-index: 2;
@@ -54,9 +63,9 @@
 
 .button_theme_wide {
     border-radius: 12px;
+    display: flex;
     height: 50px;
     padding: 0 12px;
-    display: flex;
     align-items: center;
     gap: 4px;
     width: 100%;

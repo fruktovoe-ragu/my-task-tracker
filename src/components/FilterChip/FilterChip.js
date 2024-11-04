@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { cnCreate } from '@megafon/ui-helpers';
+import React from 'react';
+import { block } from 'bem-cn';
 import CheckIcon from "../../icons/check";
 import './FilterChip.css';
 
-const cn = cnCreate('filter-chip');
+const b = block('filter-chip');
 const FilterChip = ({
     className = '',
-    chosenStatus,
-    value,
+    chosenStatus = '',
+    value = '',
     children,
     onClick,
 }) => {
     const handleClick = () => {
         onClick?.(value);
-    }
+    };
 
     return (
         <button 
-            className={cn('', { chosen: chosenStatus === value, theme: value }, className)}
+            className={b({ chosen: chosenStatus === value, theme: value }).mix(className)}
             type="button"
             aria-pressed={chosenStatus === value}
             onClick={handleClick}
         >
-            <div className={cn('inner')}>
+            <div className={b('inner')}>
                 {chosenStatus === value && <CheckIcon />}
-                <p className={cn('text')}>{children}</p>
+                <p className={b('text')}>{children}</p>
             </div>
         </button>
     )

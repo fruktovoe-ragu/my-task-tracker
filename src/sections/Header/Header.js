@@ -1,5 +1,6 @@
 import React from 'react';
-import { cnCreate } from '@megafon/ui-helpers';
+import { block } from 'bem-cn';
+import useAppContext from '../../context/useAppContext';
 import ProTrackerIcon from "../../icons/pro-tracker";
 import FilterIcon from "../../icons/filter";
 import PlusIcon from "../../icons/plus";
@@ -8,18 +9,20 @@ import Chip from "../../components/FilterChip/FilterChip";
 import { statuses } from "../../App";
 import './Header.css';
 
-const cn = cnCreate('header');
+const b = block('header');
 const Header = ({ onCreateTaskList, onFilterChipClick, chosenStatus }) => {
+  const { isMobile } = useAppContext();
+  
   return (
-      <header className={cn('')}>
-        <section className={cn('title-container')}>
+      <header className={b()}>
+        <section className={b('title-container')}>
           <ProTrackerIcon />
-          <h1 className={cn('title')}>The ultimate task-tracker Pro 3000</h1>
+          <h1 className={b('title')}>The ultimate task-tracker Pro 3000</h1>
         </section>
-        <section className={cn('application-bar')}>
-          <div className={cn('filter-container')}>
+        <section className={b('application-bar')}>
+          <div className={b('filter-container')}>
             <FilterIcon />
-            <div className={cn('filters')} role="group" aria-label="Filter options">
+            <div className={b('filters')} role="group" aria-label="Filter options">
               {statuses.map(({ value, content }) => (
                 <Chip
                   onClick={onFilterChipClick}
@@ -32,20 +35,25 @@ const Header = ({ onCreateTaskList, onFilterChipClick, chosenStatus }) => {
               ))}
             </div>
           </div>
-          <Button
-            onClick={onCreateTaskList}
-            theme='primary'
-          >
-            <PlusIcon fill="#FFFFFF" />
-            Task list
-          </Button>
+          {!isMobile &&
+            <Button
+              onClick={onCreateTaskList}
+              className={b('button')}
+              theme='primary'
+            >
+              <PlusIcon fill="#FFFFFF" />
+              Task list
+            </Button>
+          }
         </section>
-        <section className={cn('legend-container')}>
-          <p scope="col" className={cn('status')}>Status</p>
-          <p scope="col" className={cn('description')}>Task description</p>
-          <p scope="col" className={cn('date')}>Date</p>
-          <p scope="col" className={cn('actions')}>Actions</p>
-        </section>
+        {!isMobile &&
+          <section className={b('legend-container')}>
+            <p scope="col" className={b('status')}>Status</p>
+            <p scope="col" className={b('description')}>Task description</p>
+            <p scope="col" className={b('date')}>Date</p>
+            <p scope="col" className={b('actions')}>Edit</p>
+          </section>
+        }
       </header>
   );
 }

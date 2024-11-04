@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState, useRef, } from 'react';
-import { checkEventIsClickOrEnterPress, cnCreate, filterDataAttrs } from '@megafon/ui-helpers';
+import { block } from 'bem-cn';
+import { checkEventIsClickOrEnterPress } from '../../utils/checkEvent';
 import CrossIcon from "../../icons/cross";
 import Button from "../Button/Button";
 import './Textfield.css';
@@ -8,16 +9,13 @@ import './Textfield.css';
 const inputPlaceholder = 'Enter task list name';
 const textareaPlaceholder = 'Enter task description';
 
-const cn = cnCreate('text-field');
+const cn = block('text-field');
 const Textfield = ({
     className,
-    disabled,
-    id,
     textarea = false,
     name,
     required,
     isAutoFocused = true,
-    disableEnterLineBreak = false,
     onBlur,
     onChange,
     onFocus,
@@ -25,13 +23,10 @@ const Textfield = ({
     value = '',
     inputRef,
     inputMode,
-    classes = {},
-    dataAttrs,
 }) => {
     const [inputValue, setInputValue] = useState(value);
 
     const fieldNode = useRef();
-    const hasClearIcon = !disabled && !!inputValue;
 
     useEffect(() => {
         if (!textarea || !fieldNode.current) {
@@ -66,6 +61,7 @@ const Textfield = ({
 
     const handleFocus = useCallback(e => {
             onFocus?.(e);
+            moveCaretAtEnd(e);
         }, [onFocus],
     );
 
@@ -78,10 +74,13 @@ const Textfield = ({
         e.stopPropagation();
     }
 
+    const moveCaretAtEnd = e => {
+        const valueLength = e.target.value.length;
+
+        e.target.setSelectionRange(valueLength, valueLength);
+    }
+
     const commonParams = {
-        ...filterDataAttrs(dataAttrs?.input),
-        disabled,
-        id,
         name,
         value: inputValue,
         onChange: handleInputChange,
@@ -96,17 +95,13 @@ const Textfield = ({
     const inputParams = {
         ...commonParams,
         placeholder: inputPlaceholder,
-        className: cn(
-            'input', {}, classes?.input,
-        )
+        className: cn('input')
     };
 
     const textareaParams = {
         ...commonParams,
         placeholder: textareaPlaceholder,
-        className: cn(
-            'textarea', {}, classes?.input,
-        ),
+        className: cn('textarea'),
     };
 
     const getFieldNode = node => {
@@ -119,28 +114,22 @@ const Textfield = ({
     };
 
     return (
-        <div
-            {...filterDataAttrs(dataAttrs?.root)}
-            className={cn('', { disabled, textarea }, className)}
-        >
+        <div className={cn({ textarea }).mix(className)}>
             {textarea ? 
                 <textarea
                     {...textareaParams}
                     ref={getFieldNode}
-                    onKeyDown={disableEnterLineBreak ? handleTextareaKeyDown : undefined}
+                    onKeyDown={handleTextareaKeyDown}
                 /> : 
-                <>
-                    <input {...inputParams} ref={getFieldNode} onClick={handleInputClick} />
-                    {hasClearIcon && 
-                        <Button
-                            className={cn('delete-button')}
-                            onClick={handleIconClick}
-                            {...filterDataAttrs(dataAttrs?.iconBox)}
-                        >
-                            <CrossIcon />
-                        </Button>
-                    }
-                </>
+                <input {...inputParams} ref={getFieldNode} onClick={handleInputClick} />
+            }
+            {!!inputValue && 
+                <Button
+                    className={cn('delete-button')}
+                    onClick={handleIconClick}
+                >
+                    <CrossIcon />
+                </Button>
             }
         </div>
     );
