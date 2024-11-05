@@ -9,8 +9,8 @@ import './Textfield.css';
 
 const inputPlaceholder = 'Enter task list name';
 const textareaPlaceholder = 'Enter task description';
-const maxLimitExceededMessage = 'The maximum of letter limit was exceeded!';
-const invalidInputMessage = 'Only Unicode symbols are allowed';
+const maxLimitExceededMessage = 'The maximum of letter limit was exceeded.';
+const invalidInputMessage = 'Only Unicode symbols are allowed.';
 
 const b = block('text-field');
 const Textfield = ({
