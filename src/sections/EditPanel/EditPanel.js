@@ -61,7 +61,7 @@ const EditPanel = ({
         <section className={b({ mobile: isMobile }).mix(className)}>
             <form className={b('form')}>
                 {!!entityId && !isMobile && renderDeleteButton()}
-                <div className={b('textfield-container', { type: type })}>
+                <div className={b('textfield-container')}>
                     <Textfield
                         className={b('textfield')}
                         onChange={handleOnChange}

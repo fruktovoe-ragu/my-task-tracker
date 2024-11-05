@@ -7,7 +7,7 @@
     gap: 16px;
 }
 
-.edit-panel__textfield-container_type_task {
+.edit-panel__textfield-container {
     flex-grow: 1;
 }
 
