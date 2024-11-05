@@ -9,6 +9,7 @@ In the project directory, you can run:
 
 2. Potential for improvement
 
+- add Validation on input
 - use css preprocessor for better css organization
 - move all states, useEffects from App to useContenxt as I did with isMobile, to make code cleaner without prop-drilling
 - use TypeScript to provide type safety and early error detection
