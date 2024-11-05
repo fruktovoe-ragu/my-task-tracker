@@ -7,6 +7,16 @@
     overflow: hidden;
     min-width: 32px;
 }
+
+button.button_disabled {
+    background: #D9D9DB;
+    color: #909091;
+    cursor: default;
+}
+
+button.button_disabled::before {
+    content: none;
+}
   
 .button::before, button::before {
     background: transparent;

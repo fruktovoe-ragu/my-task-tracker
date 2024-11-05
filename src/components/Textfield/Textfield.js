@@ -11,7 +11,6 @@ const inputPlaceholder = 'Enter task list name';
 const textareaPlaceholder = 'Enter task description';
 const maxLimitExceededMessage = 'The maximum of letter limit was exceeded!';
 const invalidInputMessage = 'Only Unicode symbols are allowed';
-const maxLimitExceededAndInvalidInputMessage = '1. The maximum of letter limit was exceeded! \n 2.Only Unicode symbols are allowed';
 
 const b = block('text-field');
 const Textfield = ({
@@ -27,10 +26,10 @@ const Textfield = ({
     value = '',
     inputRef,
     inputMode,
-    isError = false,
 }) => {
     const [inputValue, setInputValue] = useState(value);
     const [isMaxLimitExceeded, setIsMaxLimitExceeded] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [isErrorDescriptionOpened, setIsErrorDescriptionOpened] = useState(true);
 
     const fieldNode = useRef();
@@ -38,12 +37,15 @@ const Textfield = ({
     const maxLength = 60;
 
     const checkSymbolMaxLimit = useCallback((value = '') => {
-        if (value.length > maxLength) {
-            setIsMaxLimitExceeded(true);
-        } else {
-            setIsMaxLimitExceeded(false);
-        }
+        setIsMaxLimitExceeded(value.length > maxLength);
     }, [maxLength]);
+
+    const validateValue = value => {
+        const unicodeLettersPattern = /^[\p{L}]*$/u;
+        const isUnicode = unicodeLettersPattern.test(value);
+
+        setIsError(!isUnicode);
+    }
 
     useEffect(() => {
         if (!textarea || !fieldNode.current) {
@@ -60,10 +62,14 @@ const Textfield = ({
     }, [value]);
 
     const handleInputChange = e => {
-        setInputValue(e.target.value);
+        const value = e.target.value;
 
-        !textarea && checkSymbolMaxLimit(e.target.value);
-        onChange?.(e);
+        setInputValue(value);
+
+        !textarea && setIsMaxLimitExceeded(value.length > maxLength);
+        !textarea && validateValue(value);
+
+        onChange?.(e, inValid);
     };
 
     const handleTextareaKeyDown = e => {
@@ -85,19 +91,17 @@ const Textfield = ({
         e.stopPropagation();
     }
 
-    const handleCancelClick = useCallback(
-        e => {
-            e.stopPropagation();
+    const handleCancelClick = e => {
+        e.stopPropagation();
 
-            const { current: field } = fieldNode;
+        const { current: field } = fieldNode;
 
-            setInputValue('');
-            setIsMaxLimitExceeded(false);
-            
-            field?.focus();
-        },
-        [],
-    );
+        setInputValue('');
+        setIsMaxLimitExceeded(false);
+        
+        field?.focus();
+        onChange?.(e, inValid);
+    };
 
     const handleWarningClick = e => {
         e.stopPropagation();
@@ -144,17 +148,6 @@ const Textfield = ({
         inputRef?.(node);
     };
 
-    const renderErrorMessage = () => {
-        switch (true) {
-            case isMaxLimitExceeded:
-                return maxLimitExceededMessage;
-            case isError:
-                return invalidInputMessage;
-            default:
-                return maxLimitExceededAndInvalidInputMessage;
-        }
-    } 
-
     return (
         <div className={b({ textarea }).mix(className)}>
             {textarea ? 
@@ -185,7 +178,8 @@ const Textfield = ({
             </div>
             {inValid && isErrorDescriptionOpened && 
                 <div className={b('error-text-popup')}>
-                    <p className={b('error-text')}>{renderErrorMessage()}</p>
+                    {isError && <p className={b('error-text')}>{invalidInputMessage}</p>}
+                    {isMaxLimitExceeded && <p className={b('error-text')}>{maxLimitExceededMessage}</p>}
                 </div>
             }
         </div>

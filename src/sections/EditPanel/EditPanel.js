@@ -19,6 +19,7 @@ const EditPanel = ({
     const { isMobile } = useAppContext();
 
     const [inputValue, setInputValue] = useState(entityContent);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -28,8 +29,9 @@ const EditPanel = ({
         return `${day}.${month}.${year}`;
     };
 
-    const handleOnChange = e => {
+    const handleOnChange = (e, isInvalid) => {
         setInputValue(e.target.value);
+        setIsButtonDisabled(isInvalid);
     };
 
     const handleSaveClick = e => {
@@ -37,7 +39,7 @@ const EditPanel = ({
 
         const createdAt = new Date();
         const id = !!entityId ? entityId : Date.now();
-
+        
         onSubmitClick?.(inputValue, id, formatDate(createdAt));
     };
 
@@ -76,6 +78,7 @@ const EditPanel = ({
                         isCentered={isMobile}
                         onClick={handleSaveClick}
                         theme='primary'
+                        disabled={isButtonDisabled}
                     >
                         Save
                     </Button>
