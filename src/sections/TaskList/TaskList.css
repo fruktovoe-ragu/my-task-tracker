@@ -22,6 +22,7 @@
 .task-list__head-inner {
     display: flex;
     align-items: center;
+    margin-right: 20px;
 }
 
 .task-list__title {
