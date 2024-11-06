@@ -173,7 +173,9 @@ const TaskList = ({
                     renderListEditPanel() :
                     renderListHeadInner()
                 }
-                {isCollapseOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                <div className={b('collapse-icon-container')}>
+                    {isCollapseOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                </div>
             </div>
             <Collapse isOpened={isCollapseOpened}>
                 <div className={b('inner-content')}>
