@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
 import DeleteIcon from "../../icons/delete";
 import Textfield from "../../components/Textfield/Textfield";
 import Button from "../../components/Button/Button";
 import './EditPanel.css';
+
+const maxLimitExceededMessage = 'The maximum of letter limit was exceeded.';
+const invalidFormatMessage = 'Only Unicode symbols are allowed.';
+const inputErrorsLibrary = {
+    limitExceeded: maxLimitExceededMessage,
+    invalidFormat: invalidFormatMessage,
+    both: `${maxLimitExceededMessage} <br /> ${invalidFormatMessage}`,
+};
 
 const b = block('edit-panel');
 const EditPanel = ({
@@ -19,7 +27,29 @@ const EditPanel = ({
     const { isMobile } = useAppContext();
 
     const [inputValue, setInputValue] = useState(entityContent);
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [invalidInputMessage, setInvalidInputMessage] = useState('');
+    const maxLength = 60;
+
+    const detectInvalidInput = value => {
+        switch (true) {
+            case type === 'list' && checkSymbolMaxLimit(value) && validateValue(value):
+                setInvalidInputMessage(inputErrorsLibrary.both);
+                break;
+            case type === 'list' && checkSymbolMaxLimit(value):
+                setInvalidInputMessage(inputErrorsLibrary.limitExceeded);
+                break;
+            case type === 'list' && validateValue(value):
+                setInvalidInputMessage(inputErrorsLibrary.invalidFormat);
+                break;
+            default:
+                setInvalidInputMessage('');
+                break;
+        } 
+    }
+
+    useEffect(() => {
+        detectInvalidInput(inputValue); 
+    }, [detectInvalidInput]);
 
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0');
@@ -29,9 +59,21 @@ const EditPanel = ({
         return `${day}.${month}.${year}`;
     };
 
-    const handleOnChange = (e, isInvalid) => {
+    const checkSymbolMaxLimit = useCallback((value = '') => {
+        return value.length > maxLength;
+    }, [maxLength]);
+
+    const validateValue = value => {
+        const unicodeLettersPattern = /^[\p{L}]*$/u;
+        const isUnicode = unicodeLettersPattern.test(value);
+
+        return !isUnicode;
+    }
+
+    const handleOnChange = e => {
         setInputValue(e.target.value);
-        setIsButtonDisabled(isInvalid);
+
+        detectInvalidInput(e.target.value);
     };
 
     const handleSaveClick = e => {
@@ -39,7 +81,7 @@ const EditPanel = ({
 
         const createdAt = new Date();
         const id = !!entityId ? entityId : Date.now();
-        
+
         onSubmitClick?.(inputValue, id, formatDate(createdAt));
     };
 
@@ -69,6 +111,7 @@ const EditPanel = ({
                         onChange={handleOnChange}
                         value={entityContent}
                         textarea={type === 'task'}
+                        errorMessage={invalidInputMessage}
                     />
                 </div>
                 <div className={b('actions-container')}>
@@ -78,7 +121,7 @@ const EditPanel = ({
                         isCentered={isMobile}
                         onClick={handleSaveClick}
                         theme='primary'
-                        disabled={isButtonDisabled}
+                        disabled={!!invalidInputMessage}
                     >
                         Save
                     </Button>

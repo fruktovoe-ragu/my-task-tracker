@@ -9,8 +9,6 @@ import './Textfield.css';
 
 const inputPlaceholder = 'Enter task list name';
 const textareaPlaceholder = 'Enter task description';
-const maxLimitExceededMessage = 'The maximum of letter limit was exceeded.';
-const invalidInputMessage = 'Only Unicode symbols are allowed.';
 
 const b = block('text-field');
 const Textfield = ({
@@ -26,26 +24,12 @@ const Textfield = ({
     value = '',
     inputRef,
     inputMode,
+    errorMessage = '',
 }) => {
     const [inputValue, setInputValue] = useState(value);
-    const [isMaxLimitExceeded, setIsMaxLimitExceeded] = useState(false);
-    const [isError, setIsError] = useState(false);
     const [isErrorDescriptionOpened, setIsErrorDescriptionOpened] = useState(true);
 
     const fieldNode = useRef();
-    const inValid = isMaxLimitExceeded || isError;
-    const maxLength = 60;
-
-    const checkSymbolMaxLimit = useCallback((value = '') => {
-        setIsMaxLimitExceeded(value.length > maxLength);
-    }, [maxLength]);
-
-    const validateValue = value => {
-        const unicodeLettersPattern = /^[\p{L}]*$/u;
-        const isUnicode = unicodeLettersPattern.test(value);
-
-        setIsError(!isUnicode);
-    }
 
     useEffect(() => {
         if (!textarea || !fieldNode.current) {
@@ -53,23 +37,15 @@ const Textfield = ({
         }
     }, [inputValue, textarea]);
 
-    useEffect(() => {
-        checkSymbolMaxLimit(value);
-    }, [checkSymbolMaxLimit]);
 
     useEffect(() => {
         setInputValue(value);
     }, [value]);
 
     const handleInputChange = e => {
-        const value = e.target.value;
+        setInputValue(e.target.value);
 
-        setInputValue(value);
-
-        !textarea && setIsMaxLimitExceeded(value.length > maxLength);
-        !textarea && validateValue(value);
-
-        onChange?.(e, inValid);
+        onChange?.(e);
     };
 
     const handleTextareaKeyDown = e => {
@@ -97,10 +73,9 @@ const Textfield = ({
         const { current: field } = fieldNode;
 
         setInputValue('');
-        setIsMaxLimitExceeded(false);
         
         field?.focus();
-        onChange?.(e, inValid);
+        onChange?.(e);
     };
 
     const handleWarningClick = e => {
@@ -130,7 +105,7 @@ const Textfield = ({
     const inputParams = {
         ...commonParams,
         placeholder: inputPlaceholder,
-        className: b('input', { invalid: inValid })
+        className: b('input', { invalid: !!errorMessage })
     };
 
     const textareaParams = {
@@ -167,7 +142,7 @@ const Textfield = ({
                         <CrossIcon />
                     </Button>
                 }
-                {inValid && 
+                {!!errorMessage && 
                     <Button
                         className={b('warning-button')}
                         onClick={handleWarningClick}
@@ -176,10 +151,9 @@ const Textfield = ({
                     </Button>
                 }
             </div>
-            {inValid && isErrorDescriptionOpened && 
+            {!!errorMessage && isErrorDescriptionOpened && 
                 <div className={b('error-text-popup')}>
-                    {isError && <p className={b('error-text')}>{invalidInputMessage}</p>}
-                    {isMaxLimitExceeded && <p className={b('error-text')}>{maxLimitExceededMessage}</p>}
+                    {!!errorMessage && <p dangerouslySetInnerHTML={{ __html: errorMessage }} />}
                 </div>
             }
         </div>
