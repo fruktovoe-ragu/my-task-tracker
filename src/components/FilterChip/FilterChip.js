@@ -1,29 +1,40 @@
 import React from 'react';
 import { block } from 'bem-cn';
+import { useSelector } from 'react-redux';
+import store from '../../store/store';
+import { SELECT_FILTER_CHIP } from "../../store/constants";
 import CheckIcon from "../../icons/check";
 import './FilterChip.css';
 
 const b = block('filter-chip');
 const FilterChip = ({
     className = '',
-    chosenStatus = '',
     value = '',
     children,
-    onClick,
 }) => {
+    const currentChipValue = useSelector(state => state.filtering).chosenStatusId;
+
     const handleClick = () => {
-        onClick?.(value);
+        store.dispatch((dispatch, getState) => {
+            const prevValue = getState().filtering.chosenStatusId;
+            const newValue = prevValue === value ? '' : value;
+
+            dispatch({
+                type: SELECT_FILTER_CHIP,
+                payload: newValue,
+            })
+        });
     };
 
     return (
-        <button 
-            className={b({ chosen: chosenStatus === value, theme: value }).mix(className)}
+        <button
+            className={b({ chosen: currentChipValue === value, theme: value }).mix(className)}
             type="button"
-            aria-pressed={chosenStatus === value}
+            aria-pressed={currentChipValue === value}
             onClick={handleClick}
         >
             <div className={b('inner')}>
-                {chosenStatus === value && <CheckIcon />}
+                {currentChipValue === value && <CheckIcon />}
                 <p className={b('text')}>{children}</p>
             </div>
         </button>

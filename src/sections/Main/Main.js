@@ -1,6 +1,13 @@
 import React from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
+import { useSelector } from 'react-redux';
+import store from '../../store/store';
+import {
+  SUBMIT_LIST,
+  CANCEL_EDIT_LIST,
+  CREATE_NEW_LIST,
+} from "../../store/constants";
 import PlusIcon from "../../icons/plus";
 import EditPanel from "../../sections/EditPanel/EditPanel";
 import EmptyState from "../../sections/EmptyState/EmptyState";
@@ -9,35 +16,41 @@ import Button from "../../components/Button/Button";
 import './Main.css';
 
 const b = block('main');
-const Main = ({
-    taskLists,
-    editingListId,
-    editingTaskId,
-    chosenStatusId,
-    onTaskStatusChange,
-    onCreateListClick,
-    onEditListClick,
-    onCancelListClick,
-    onSubmitListClick,
-    onDeleteListClick,
-    onCreateTaskClick,
-    onEditTaskClick,
-    onCancelTaskClick,
-    onSubmitTaskClick,
-    onDeleteTaskClick,
-}) => {
+const Main = () => {
   const { isMobile } = useAppContext();
+  const { editingListId, taskLists } = useSelector(state => state.listDataUpdating);
+
+  const handleSubmitListClick = (value, id) => {
+    store.dispatch({
+        type: SUBMIT_LIST,
+        payload: {
+            listContent: value, listId: id
+        },
+    });
+  };
+
+  const handleCreateListClick = () => {
+    store.dispatch({
+      type: CREATE_NEW_LIST,
+    });
+  };
+
+  const handleCancelListClick = () => {
+    store.dispatch({
+      type: CANCEL_EDIT_LIST,
+    });
+  };
 
   const renderEntryScreen = () => (
-    editingListId === 0 ? 
+    editingListId === 0 ?
       <div className={b('create-new-list-container')}>
         <h2 className={b('title')}>Create your first task list</h2>
         <EditPanel
-          onSubmitClick={onSubmitListClick}
-          onCancelClick={onCancelListClick}
+          onSubmitClick={handleSubmitListClick}
+          onCancelClick={handleCancelListClick}
         />
       </div> :
-      <EmptyState onCreateListClick={onCreateListClick} />
+      <EmptyState onCreateListClick={handleCreateListClick} />
   );
 
   const renderListsContainer = () => (
@@ -45,38 +58,27 @@ const Main = ({
       {taskLists.map((list) => (
           <TaskList
             key={list.id}
-            editingListId={editingListId}
-            editingTaskId={editingTaskId}
-            chosenStatusId={chosenStatusId}
             taskListData={list}
-            onEditListClick={onEditListClick}
-            onCancelListClick={onCancelListClick}
-            onSubmitListClick={onSubmitListClick}
-            onDeleteListClick={onDeleteListClick}
-            onCreateTaskClick={onCreateTaskClick}
-            onEditTaskClick={onEditTaskClick}
-            onCancelTaskClick={onCancelTaskClick}
-            onSubmitTaskClick={onSubmitTaskClick}
-            onDeleteTaskClick={onDeleteTaskClick}
-            onTaskStatusChange={onTaskStatusChange}
+            onCancelListClick={handleCancelListClick}
+            onSubmitListClick={handleSubmitListClick}
           />
         ))}
         {editingListId === 0 ?
           <div className={b('future-list-container')}>
             <EditPanel
-              onSubmitClick={onSubmitListClick}
-              onCancelClick={onCancelListClick}
-              editingEntityId={editingListId}
+              onSubmitClick={handleSubmitListClick}
+              onCancelClick={handleCancelListClick}
+              entityId={editingListId}
               type="list"
             />
           </div> :
           <Button
             className={b('create-list-button')}
             theme={'wide'}
-            onClick={onCreateListClick}
+            onClick={handleCreateListClick}
             isCentered={isMobile}
           >
-            <PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} /> 
+            <PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} />
             Task list
           </Button>
         }

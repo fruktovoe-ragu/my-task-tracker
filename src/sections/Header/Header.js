@@ -1,6 +1,9 @@
 import React from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
+import store from '../../store/store';
+import { CREATE_NEW_LIST } from "../../store/constants";
+import { useSelector } from 'react-redux';
 import ProTrackerIcon from "../../icons/pro-tracker";
 import FilterIcon from "../../icons/filter";
 import PlusIcon from "../../icons/plus";
@@ -10,9 +13,16 @@ import { statuses } from "../../App";
 import './Header.css';
 
 const b = block('header');
-const Header = ({ onCreateTaskList, onFilterChipClick, chosenStatus }) => {
+const Header = () => {
   const { isMobile } = useAppContext();
-  
+  const taskLists = useSelector(state => state.listDataUpdating).taskLists;
+
+  const handleCreateListClick = () => {
+    store.dispatch({
+      type: CREATE_NEW_LIST,
+    });
+  };
+
   return (
       <header className={b()}>
         <section className={b('title-container')}>
@@ -25,19 +35,17 @@ const Header = ({ onCreateTaskList, onFilterChipClick, chosenStatus }) => {
             <div className={b('filters')} role="group" aria-label="Filter options">
               {statuses.map(({ value, content }) => (
                 <Chip
-                  onClick={onFilterChipClick}
-                  chosenStatus={chosenStatus}
                   value={value}
                   key={value}
                 >
                   {content}
-                </Chip>  
+                </Chip>
               ))}
             </div>
           </div>
           {!isMobile &&
             <Button
-              onClick={onCreateTaskList}
+              onClick={handleCreateListClick}
               className={b('button')}
               theme='primary'
             >
@@ -46,12 +54,12 @@ const Header = ({ onCreateTaskList, onFilterChipClick, chosenStatus }) => {
             </Button>
           }
         </section>
-        {!isMobile &&
+        {!isMobile && !!taskLists.length &&
           <section className={b('legend-container')}>
-            <p scope="col" className={b('status')}>Status</p>
-            <p scope="col" className={b('description')}>Task description</p>
-            <p scope="col" className={b('date')}>Date</p>
-            <p scope="col" className={b('actions')}>Edit</p>
+            <p className={b('status')}>Status</p>
+            <p className={b('description')}>Task description</p>
+            <p className={b('date')}>Date</p>
+            <p className={b('actions')}>Edit</p>
           </section>
         }
       </header>

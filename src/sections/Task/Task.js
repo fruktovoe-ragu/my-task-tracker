@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
+import { useSelector } from 'react-redux';
+import store from '../../store/store';
+import { EDIT_TASK, CANCEL_EDIT_TASK } from "../../store/constants";
 import EditIcon from "../../icons/edit";
 import EditPanel from "../EditPanel/EditPanel";
 import MobileSideBlock from "../MobileSideBlock/MobileSideBlock";
@@ -15,14 +18,12 @@ const Task = ({
     description,
     status,
     date,
-    editingTaskId,
-    onEditClick,
-    onCancelClick,
     onSubmitClick,
     onDeleteClick,
     onTaskStatusChange,
 }) => {
     const { isMobile } = useAppContext();
+    const { editingTaskId } = useSelector(state => state.listDataUpdating);
 
     const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
 
@@ -33,13 +34,24 @@ const Task = ({
     const handlePreviewClick = () => {
         setIsMobilePreviewOpened(prevState => !prevState);
     };
-    // End 
+    // End
 
     // Task handlers
     // Start
     const handleEditTaskClick = () => {
-        onEditClick?.(id);
+        store.dispatch({
+            type: EDIT_TASK,
+            payload: id,
+        });
     };
+
+    const handleCancelEditTaskClick = () => {
+        isMobile && setIsMobilePreviewOpened(prevState => !prevState);
+
+        store.dispatch({
+            type: CANCEL_EDIT_TASK,
+        });
+    }
 
     const handleDeleteTaskClick = () => {
         onDeleteClick?.(id);
@@ -48,8 +60,8 @@ const Task = ({
     const handleTaskStatusChange = value => {
         onTaskStatusChange?.(value, id);
     };
-    // End 
-    
+    // End
+
     // Render functions
     // Start
     const renderStatusContainer = (disabled = false) => (
@@ -81,19 +93,19 @@ const Task = ({
     const renderEditPanel = () => (
         <EditPanel
             onSubmitClick={onSubmitClick}
-            onCancelClick={onCancelClick}
+            onCancelClick={handleCancelEditTaskClick}
             onDeleteClick={handleDeleteTaskClick}
             entityContent={description}
             entityId={id}
             className={b('edit-panel')}
             type="task"
-        /> 
+        />
     );
-    // End 
+    // End
 
     return (
         <li className={b({}).mix(className)}>
-            {!isMobile && 
+            {!isMobile &&
                 <>
                     {editingTaskId === id ?
                         renderEditPanel() :
@@ -115,7 +127,7 @@ const Task = ({
                     </div>
                 </div>
             }
-            {isMobile && isMobilePreviewOpened && 
+            {isMobile && isMobilePreviewOpened &&
                 <MobileSideBlock titleContent={mobileSideBlockTitle} onCancelClick={handlePreviewClick}>
                     {editingTaskId === id ?
                         renderEditPanel() :

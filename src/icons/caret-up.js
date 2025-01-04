@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => (
+const caretUpIcon =  () => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g filter="url(#filter0_b_21_537)">
             <path d="M14.1666 11.6667H5.83325L9.99992 7.5L14.1666 11.6667Z" fill="#101D46"/>
@@ -15,3 +15,5 @@ export default () => (
         </defs>
     </svg>
 );
+
+export default caretUpIcon;

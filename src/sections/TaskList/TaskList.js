@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { checkEventIsClickOrEnterPress } from '../../utils/checkEvent';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
+import { useSelector } from 'react-redux';
+import store from '../../store/store';
+import {
+    EDIT_LIST,
+    DELETE_LIST,
+    CREATE_NEW_TASK,
+    CANCEL_EDIT_TASK,
+    SUBMIT_TASK,
+    DELETE_TASK,
+    CHANGE_TASK_STATUS,
+} from "../../store/constants";
 import ChevronDownIcon from "../../icons/chevron-down";
 import ChevronUpIcon from "../../icons/chevron-up";
 import EditIcon from "../../icons/edit";
@@ -15,22 +26,13 @@ import './TaskList.css';
 
 const b = block('task-list');
 const TaskList = ({
-    editingListId,
-    editingTaskId,
-    chosenStatusId,
     taskListData,
-    onEditListClick,
     onCancelListClick,
     onSubmitListClick,
-    onDeleteListClick,
-    onCreateTaskClick,
-    onEditTaskClick,
-    onCancelTaskClick,
-    onSubmitTaskClick,
-    onDeleteTaskClick,
-    onTaskStatusChange,
 }) => {
     const { isMobile } = useAppContext();
+    const currentChipValue = useSelector(state => state.filtering).chosenStatusId;
+    const { editingTaskId, editingListId } = useSelector(state => state.listDataUpdating);
 
     const [isCollapseOpened, setIsCollapseOpened] = useState(true);
     const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
@@ -54,47 +56,79 @@ const TaskList = ({
     const handleEditListClick = e => {
         e.stopPropagation();
 
-        onEditListClick?.(listId);
+        store.dispatch({
+            type: EDIT_LIST,
+            payload: listId,
+        });
     }
 
     const handleDeleteListClick = e => {
         e.stopPropagation();
 
-        onDeleteListClick?.(listId);
+        store.dispatch({
+            type: DELETE_LIST,
+            payload: listId,
+        });
     };
     // End
 
     // Task handlers
     // Start
-    const handleCreateTaskClick = newTask => e => {
+    const handleCreateTaskClick = e => {
         e.stopPropagation();
-        
+
+        store.dispatch({
+            type: CREATE_NEW_TASK,
+            payload: listId,
+        });
+
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
-        
-        onCreateTaskClick?.(newTask, listId);
     };
+
+    const handleCancelEditTaskClick = () => {
+        isMobile && setIsMobilePreviewOpened(prevState => !prevState);
+
+        store.dispatch({
+            type: CANCEL_EDIT_TASK,
+        });
+    }
 
     const handlerSubmitTaskClick = (content, taskId, date) => {
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
 
-        onSubmitTaskClick?.(content, taskId, date, listId);
+        store.dispatch({
+            type: SUBMIT_TASK,
+            payload: {
+                content: content,
+                date: date,
+                taskId: taskId,
+                listId: listId,
+            },
+        });
     };
 
-    const handleCancelTaskClick = () => {
-        isMobile && setIsMobilePreviewOpened(prevState => !prevState);
-
-        onCancelTaskClick?.();
-    }
-
     const handleDeleteTaskClick = taskId => {
-        onDeleteTaskClick?.(listId, taskId);
+        store.dispatch({
+            type: DELETE_TASK,
+            payload: {
+                taskId: taskId,
+                listId: listId,
+            }
+        });
     };
 
     const handleTaskStatusChange = (value, taskId) => {
-        onTaskStatusChange?.(value, taskId, listId);
+        store.dispatch({
+            type: CHANGE_TASK_STATUS,
+            payload: {
+                value: value,
+                taskId: taskId,
+                listId: listId,
+            },
+        });
     };
     // End
-    
+
     // Render functions
     // Start
     const renderListHeadInner = () => (
@@ -107,7 +141,7 @@ const TaskList = ({
                 {!isMobile &&
                     <Button
                         theme='primary'
-                        onClick={handleCreateTaskClick('newTask')}
+                        onClick={handleCreateTaskClick}
                     >
                         <PlusIcon fill="#FFFFFF" />
                         New task
@@ -120,21 +154,18 @@ const TaskList = ({
     const renderTaskContainer = () => (
         <ul className={b('tasks-container')}>
             {tasksList.map(({ description, id, status, date }) => {
-                const isTaskShown = chosenStatusId === status || chosenStatusId === '';
+                const isTaskShown = currentChipValue === status || currentChipValue === '';
 
                 return (
-                    isTaskShown && 
+                    isTaskShown &&
                     <Task
                         key={id}
                         id={id}
                         description={description}
                         status={status}
                         date={date}
-                        editingTaskId={editingTaskId}
-                        onEditClick={onEditTaskClick}
                         onDeleteClick={handleDeleteTaskClick}
                         onSubmitClick={handlerSubmitTaskClick}
-                        onCancelClick={onCancelTaskClick}
                         onTaskStatusChange={handleTaskStatusChange}
                     />
                 )
@@ -156,7 +187,7 @@ const TaskList = ({
         <EditPanel
             className={b('edit-panel')}
             onSubmitClick={handlerSubmitTaskClick}
-            onCancelClick={handleCancelTaskClick}
+            onCancelClick={handleCancelEditTaskClick}
             type="task"
         />
     );
@@ -164,7 +195,7 @@ const TaskList = ({
 
     return (
         <section className={b()}>
-            <div 
+            <div
                 className={b('head')}
                 onClick={handleTitleClick}
                 onKeyDown={handleTitleClick}
@@ -185,10 +216,10 @@ const TaskList = ({
                             renderTaskEditPanel() :
                             <Button
                                 className={b('add-task-button')}
-                                onClick={handleCreateTaskClick('newTask')}
+                                onClick={handleCreateTaskClick}
                                 theme='wide'
                             >
-                                <PlusIcon /> 
+                                <PlusIcon />
                                 New task
                             </Button>
                         }
@@ -197,14 +228,12 @@ const TaskList = ({
             </Collapse>
             {isMobile && isMobilePreviewOpened &&
                 <MobileSideBlock
-                    titleContent='Create a new task' 
+                    titleContent='Create a new task'
                     onCancelClick={handlePreviewClick}
                 >
                     {renderTaskEditPanel()}
                 </MobileSideBlock>
             }
-
-            
         </section>
     );
 };
