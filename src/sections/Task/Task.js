@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
-import { useSelector } from 'react-redux';
-import store from '../../store/store';
-import { EDIT_TASK, CANCEL_EDIT_TASK } from "../../store/constants";
-import EditIcon from "../../icons/edit";
+import { useSelector, useDispatch } from 'react-redux';
+import { editTask, cancelEditTask } from '../../store/dataUpdating';
 import EditPanel from "../EditPanel/EditPanel";
 import MobileSideBlock from "../MobileSideBlock/MobileSideBlock";
 import SelectChip from "../../components/SelectChip/SelectChip";
+import Menu from "../../components/Menu/Menu";
 import Button from "../../components/Button/Button";
+import DeleteIcon from "../../icons/delete";
+import EditIcon from "../../icons/edit";
 import './Task.css';
 
 const b = block('task');
@@ -24,33 +25,26 @@ const Task = ({
 }) => {
     const { isMobile } = useAppContext();
     const { editingTaskId } = useSelector(state => state.listDataUpdating);
+    const dispatch = useDispatch();
 
     const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
 
     const mobileSideBlockTitle = editingTaskId === id ? 'Task editing' : 'Task description';
 
-    // Component related handlers
+    // Handler functions
     // Start
     const handlePreviewClick = () => {
         setIsMobilePreviewOpened(prevState => !prevState);
     };
-    // End
 
-    // Task handlers
-    // Start
     const handleEditTaskClick = () => {
-        store.dispatch({
-            type: EDIT_TASK,
-            payload: id,
-        });
+       dispatch(editTask(id));
     };
 
     const handleCancelEditTaskClick = () => {
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
 
-        store.dispatch({
-            type: CANCEL_EDIT_TASK,
-        });
+        dispatch(cancelEditTask());
     }
 
     const handleDeleteTaskClick = () => {
@@ -84,9 +78,24 @@ const Task = ({
 
     const renderActionsContainer = () => (
         <div className={b('actions-container')}>
-            <Button onClick={handleEditTaskClick}>
-                <EditIcon />
-            </Button>
+            {isMobile ?
+                <>
+                    <Button onClick={handleEditTaskClick}>
+                        <EditIcon />
+                    </Button>
+                    <Button
+                        className={b('delete-button')}
+                        onClick={handleDeleteTaskClick}
+                    >
+                        <DeleteIcon />
+                    </Button>
+                </> :
+                <Menu
+                    position="top-left"
+                    onEditClick={handleEditTaskClick}
+                    onDeleteClick={handleDeleteTaskClick}
+                />
+            }
         </div>
     );
 

@@ -4,7 +4,7 @@
 }
 
 .header__title-container {
-    background-color: #414B6A; 
+    background-color: #414B6A;
     display: flex;
     align-items: center;
     padding: 12px 86px;
@@ -67,7 +67,7 @@
 }
 
 .header__actions {
-    width: 32px;
+    width: 52px;
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {

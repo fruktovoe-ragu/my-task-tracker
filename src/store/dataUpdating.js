@@ -1,20 +1,8 @@
-import {
-    CREATE_NEW_LIST,
-    EDIT_LIST,
-    CANCEL_EDIT_LIST,
-    SUBMIT_LIST,
-    DELETE_LIST,
-    CREATE_NEW_TASK,
-    EDIT_TASK,
-    CANCEL_EDIT_TASK,
-    SUBMIT_TASK,
-    DELETE_TASK,
-    CHANGE_TASK_STATUS,
-} from "../store/constants";
+import { createSlice } from "@reduxjs/toolkit";
 import { statuses } from '../App';
 import updateDataCodeArr from '../utils/updateDataCode';
 
-const initialDataState = {
+const initialState = {
     taskLists: (() => {
         const savedTaskLists = localStorage.getItem("taskLists");
 
@@ -24,30 +12,22 @@ const initialDataState = {
     editingTaskId: null,
 };
 
-export const listDataUpdatingReducer = (state = initialDataState, action) => {
-    switch (action.type) {
-        // List
-        case CREATE_NEW_LIST: {
-            return {
-                ...state,
-                editingListId: 0,
-                editingTaskId: null,
-            };
-        }
-        case EDIT_LIST: {
-            return {
-                ...state,
-                editingListId: action.payload,
-                editingTaskId: null,
-            };
-        }
-        case CANCEL_EDIT_LIST: {
-            return {
-                ...state,
-                editingListId: null,
-            };
-        }
-        case SUBMIT_LIST: {
+const listDataUpdatingSlice = createSlice({
+    name: 'listDataUpdating',
+    initialState,
+    reducers: {
+        createNewList: state => {
+            state.editingListId = 0;
+            state.editingTaskId = null;
+        },
+        editList: (state, action) => {
+            state.editingListId = action.payload;
+            state.editingTaskId = null;
+        },
+        cancelEditList: state => {
+            state.editingListId = null;
+        },
+        submitList: (state, action) => {
             const { taskLists } = state;
             const { listContent, listId } = action.payload;
 
@@ -64,13 +44,10 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
 
             localStorage.setItem("taskLists", JSON.stringify(updatedTaskLists));
 
-            return {
-                ...state,
-                editingListId: null,
-                taskLists: updatedTaskLists,
-            };
-        }
-        case DELETE_LIST: {
+            state.editingListId = null;
+            state.taskLists = updatedTaskLists;
+        },
+        deleteList: (state, action) => {
             const { taskLists } = state;
             const listId = action.payload;
 
@@ -78,37 +55,24 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
 
             localStorage.setItem("taskLists", JSON.stringify(updatedTaskLists));
 
-            return {
-                ...state,
-                taskLists: updatedTaskLists,
-            };
-        };
-        // Task
-        case CREATE_NEW_TASK: {
+            state.taskLists = updatedTaskLists;
+        },
+        createNewTask: (state, action) => {
             const listId = action.payload;
 
-            return {
-                ...state,
-                editingListId: null,
-                editingTaskId: listId,
-            };
-        }
-        case EDIT_TASK: {
+            state.editingListId = null;
+            state.editingTaskId = listId;
+        },
+        editTask: (state, action) => {
             const taskId = action.payload;
 
-            return {
-                ...state,
-                editingListId: null,
-                editingTaskId: taskId,
-            };
-        }
-        case CANCEL_EDIT_TASK: {
-            return {
-                ...state,
-                editingTaskId: null,
-            };
-        }
-        case SUBMIT_TASK: {
+            state.editingListId = null;
+            state.editingTaskId = taskId;
+        },
+        cancelEditTask: state => {
+            state.editingTaskId = null;
+        },
+        submitTask: (state, action) => {
             const { taskLists } = state;
             const { content, date, taskId, listId } = action.payload;
 
@@ -124,7 +88,7 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
                 date: date,
             };
 
-            const updatedTaskLists = taskLists.map((list) => {
+            const updatedTaskLists = taskLists.map(list => {
                 if (list.id === listId) {
                     return {
                         ...list,
@@ -136,13 +100,10 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
 
             localStorage.setItem("taskLists", JSON.stringify(updatedTaskLists));
 
-            return {
-                ...state,
-                taskLists: updatedTaskLists,
-                editingTaskId: null,
-            };
-        }
-        case DELETE_TASK: {
+            state.editingTaskId = null;
+            state.taskLists = updatedTaskLists;
+        },
+        deleteTask: (state, action) => {
             const { taskLists } = state;
             const { taskId, listId } = action.payload;
 
@@ -155,12 +116,9 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
 
             localStorage.setItem("taskLists", JSON.stringify(filteredTaskLists));
 
-            return {
-                ...state,
-                taskLists: updateDataCodeArr(taskLists, listId, certainList, listUpdates),
-            };
-        }
-        case CHANGE_TASK_STATUS: {
+            state.taskLists = updateDataCodeArr(taskLists, listId, certainList, listUpdates);
+        },
+        changeTaskStatus: (state, action) => {
             const { taskLists } = state;
             const { value, taskId, listId } = action.payload;
 
@@ -178,12 +136,13 @@ export const listDataUpdatingReducer = (state = initialDataState, action) => {
                 return list;
             });
 
-            return {
-                ...state,
-                taskLists: updatedTaskLists,
-            };
-        }
-        default:
-            return state;
-    }
-};
+            state.taskLists = updatedTaskLists;
+        },
+    },
+})
+
+export const {
+    createNewList, editList, cancelEditList, submitList, deleteList,
+    createNewTask, editTask, cancelEditTask, submitTask, deleteTask, changeTaskStatus,
+} = listDataUpdatingSlice.actions;
+export default listDataUpdatingSlice.reducer;

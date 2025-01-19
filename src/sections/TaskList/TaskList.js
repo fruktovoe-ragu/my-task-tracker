@@ -2,23 +2,14 @@ import React, { useState } from 'react';
 import { checkEventIsClickOrEnterPress } from '../../utils/checkEvent';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
-import { useSelector } from 'react-redux';
-import store from '../../store/store';
+import { useSelector, useDispatch } from 'react-redux';
 import {
-    EDIT_LIST,
-    DELETE_LIST,
-    CREATE_NEW_TASK,
-    CANCEL_EDIT_TASK,
-    SUBMIT_TASK,
-    DELETE_TASK,
-    CHANGE_TASK_STATUS,
-} from "../../store/constants";
-import ChevronDownIcon from "../../icons/chevron-down";
-import ChevronUpIcon from "../../icons/chevron-up";
-import EditIcon from "../../icons/edit";
+   createNewTask, cancelEditTask, submitTask, deleteTask, changeTaskStatus,
+} from '../../store/dataUpdating';
 import PlusIcon from "../../icons/plus";
 import MobileSideBlock from "../../sections/MobileSideBlock/MobileSideBlock";
 import EditPanel from "../../sections/EditPanel/EditPanel";
+import TaskListHead from "../TaskListHead/TaskListHead";
 import Task from "../Task/Task";
 import Collapse from "../../components/Collapse/Collapse";
 import Button from "../../components/Button/Button";
@@ -27,20 +18,22 @@ import './TaskList.css';
 const b = block('task-list');
 const TaskList = ({
     taskListData,
-    onCancelListClick,
-    onSubmitListClick,
 }) => {
     const { isMobile } = useAppContext();
-    const currentChipValue = useSelector(state => state.filtering).chosenStatusId;
-    const { editingTaskId, editingListId } = useSelector(state => state.listDataUpdating);
+    const currentChipValue = useSelector(state => state.filtering.chosenStatusValue);
+    const { editingTaskId } = useSelector(state => state.listDataUpdating);
+    const dispatch = useDispatch();
 
     const [isCollapseOpened, setIsCollapseOpened] = useState(true);
     const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
 
-    const { listName, id: listId, tasksList = [] } = taskListData;
+    const { id: listId, tasksList = [] } = taskListData;
 
     // Component related handlers
     const handleTitleClick = e => {
+        if (e.target.closest('.menu')) {
+            return;
+        }
         if (checkEventIsClickOrEnterPress(e)) {
             setIsCollapseOpened(!isCollapseOpened);
         }
@@ -51,36 +44,12 @@ const TaskList = ({
     };
     // End
 
-    // List handlers
-    // Start
-    const handleEditListClick = e => {
-        e.stopPropagation();
-
-        store.dispatch({
-            type: EDIT_LIST,
-            payload: listId,
-        });
-    }
-
-    const handleDeleteListClick = e => {
-        e.stopPropagation();
-
-        store.dispatch({
-            type: DELETE_LIST,
-            payload: listId,
-        });
-    };
-    // End
-
     // Task handlers
     // Start
     const handleCreateTaskClick = e => {
         e.stopPropagation();
 
-        store.dispatch({
-            type: CREATE_NEW_TASK,
-            payload: listId,
-        });
+        dispatch(createNewTask(listId));
 
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
     };
@@ -88,72 +57,41 @@ const TaskList = ({
     const handleCancelEditTaskClick = () => {
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
 
-        store.dispatch({
-            type: CANCEL_EDIT_TASK,
-        });
+        dispatch(cancelEditTask());
     }
 
     const handlerSubmitTaskClick = (content, taskId, date) => {
         isMobile && setIsMobilePreviewOpened(prevState => !prevState);
 
-        store.dispatch({
-            type: SUBMIT_TASK,
-            payload: {
-                content: content,
-                date: date,
-                taskId: taskId,
-                listId: listId,
-            },
-        });
+        dispatch(submitTask({
+            content: content,
+            date: date,
+            taskId: taskId,
+            listId: listId,
+        }));
     };
 
     const handleDeleteTaskClick = taskId => {
-        store.dispatch({
-            type: DELETE_TASK,
-            payload: {
-                taskId: taskId,
-                listId: listId,
-            }
-        });
+        dispatch(deleteTask({
+            taskId: taskId,
+            listId: listId,
+        }));
     };
 
     const handleTaskStatusChange = (value, taskId) => {
-        store.dispatch({
-            type: CHANGE_TASK_STATUS,
-            payload: {
-                value: value,
-                taskId: taskId,
-                listId: listId,
-            },
-        });
+        dispatch(changeTaskStatus({
+            value: value,
+            taskId: taskId,
+            listId: listId,
+        }));
     };
     // End
 
     // Render functions
     // Start
-    const renderListHeadInner = () => (
-        <div className={b('head-inner')}>
-            <h2 className={b('title')}>{listName}</h2>
-            <div className={b('actions-container')}>
-                <Button onClick={handleEditListClick}>
-                    <EditIcon />
-                </Button>
-                {!isMobile &&
-                    <Button
-                        theme='primary'
-                        onClick={handleCreateTaskClick}
-                    >
-                        <PlusIcon fill="#FFFFFF" />
-                        New task
-                    </Button>
-                }
-            </div>
-        </div>
-    );
-
     const renderTaskContainer = () => (
         <ul className={b('tasks-container')}>
-            {tasksList.map(({ description, id, status, date }) => {
+            {tasksList.map(({ description, id, status, date }, i) => {
                 const isTaskShown = currentChipValue === status || currentChipValue === '';
 
                 return (
@@ -173,16 +111,6 @@ const TaskList = ({
         </ul>
     );
 
-    const renderListEditPanel = () => (
-        <EditPanel
-            onSubmitClick={onSubmitListClick}
-            onCancelClick={onCancelListClick}
-            onDeleteClick={handleDeleteListClick}
-            entityContent={listName}
-            entityId={listId}
-        />
-    );
-
     const renderTaskEditPanel = () => (
         <EditPanel
             className={b('edit-panel')}
@@ -195,19 +123,11 @@ const TaskList = ({
 
     return (
         <section className={b()}>
-            <div
-                className={b('head')}
-                onClick={handleTitleClick}
-                onKeyDown={handleTitleClick}
-            >
-                {editingListId === listId ?
-                    renderListEditPanel() :
-                    renderListHeadInner()
-                }
-                <div className={b('collapse-icon-container')}>
-                    {isCollapseOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                </div>
-            </div>
+            <TaskListHead
+                taskListData={taskListData}
+                isCollapseOpened={isCollapseOpened}
+                onTitleClick={handleTitleClick}
+            />
             <Collapse isOpened={isCollapseOpened}>
                 <div className={b('inner-content')}>
                     {!!tasksList.length && renderTaskContainer()}

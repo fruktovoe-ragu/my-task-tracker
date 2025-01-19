@@ -1,13 +1,8 @@
 import React from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
-import { useSelector } from 'react-redux';
-import store from '../../store/store';
-import {
-  SUBMIT_LIST,
-  CANCEL_EDIT_LIST,
-  CREATE_NEW_LIST,
-} from "../../store/constants";
+import { useSelector, useDispatch } from 'react-redux';
+import { createNewList, submitList, cancelEditList } from '../../store/dataUpdating';
 import PlusIcon from "../../icons/plus";
 import EditPanel from "../../sections/EditPanel/EditPanel";
 import EmptyState from "../../sections/EmptyState/EmptyState";
@@ -19,26 +14,20 @@ const b = block('main');
 const Main = () => {
   const { isMobile } = useAppContext();
   const { editingListId, taskLists } = useSelector(state => state.listDataUpdating);
+  const dispatch = useDispatch();
 
   const handleSubmitListClick = (value, id) => {
-    store.dispatch({
-        type: SUBMIT_LIST,
-        payload: {
-            listContent: value, listId: id
-        },
-    });
+    dispatch(submitList({
+      listContent: value, listId: id,
+    }));
   };
 
   const handleCreateListClick = () => {
-    store.dispatch({
-      type: CREATE_NEW_LIST,
-    });
+    dispatch(createNewList());
   };
 
-  const handleCancelListClick = () => {
-    store.dispatch({
-      type: CANCEL_EDIT_LIST,
-    });
+  const handleCancelEditListClick = () => {
+    dispatch(cancelEditList());
   };
 
   const renderEntryScreen = () => (
@@ -47,7 +36,7 @@ const Main = () => {
         <h2 className={b('title')}>Create your first task list</h2>
         <EditPanel
           onSubmitClick={handleSubmitListClick}
-          onCancelClick={handleCancelListClick}
+          onCancelClick={handleCancelEditListClick}
         />
       </div> :
       <EmptyState onCreateListClick={handleCreateListClick} />
@@ -59,15 +48,13 @@ const Main = () => {
           <TaskList
             key={list.id}
             taskListData={list}
-            onCancelListClick={handleCancelListClick}
-            onSubmitListClick={handleSubmitListClick}
           />
         ))}
         {editingListId === 0 ?
           <div className={b('future-list-container')}>
             <EditPanel
               onSubmitClick={handleSubmitListClick}
-              onCancelClick={handleCancelListClick}
+              onCancelClick={handleCancelEditListClick}
               entityId={editingListId}
               type="list"
             />

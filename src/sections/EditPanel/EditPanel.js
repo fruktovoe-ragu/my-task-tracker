@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
-import DeleteIcon from "../../icons/delete";
 import Textfield from "../../components/Textfield/Textfield";
 import Button from "../../components/Button/Button";
 import './EditPanel.css';
@@ -18,7 +17,6 @@ const b = block('edit-panel');
 const EditPanel = ({
     onSubmitClick,
     onCancelClick,
-    onDeleteClick,
     entityContent = '',
     entityId = '',
     className = '',
@@ -92,19 +90,9 @@ const EditPanel = ({
         onCancelClick?.();
     };
 
-    const renderDeleteButton = () => (
-        <Button
-            className={b('delete-button')}
-            onClick={onDeleteClick}
-        >
-            <DeleteIcon />
-        </Button>
-    );
-
     return (
         <section className={b({ mobile: isMobile }).mix(className)}>
             <form className={b('form')}>
-                {!!entityId && !isMobile && renderDeleteButton()}
                 <div className={b('textfield-container')}>
                     <Textfield
                         className={b('textfield')}
@@ -115,7 +103,6 @@ const EditPanel = ({
                     />
                 </div>
                 <div className={b('actions-container')}>
-                    {!!entityId && isMobile && renderDeleteButton()}
                     <Button
                         className={b('save-button')}
                         isCentered={isMobile}

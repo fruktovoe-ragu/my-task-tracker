@@ -1,9 +1,8 @@
 import React from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
-import store from '../../store/store';
-import { CREATE_NEW_LIST } from "../../store/constants";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { createNewList } from '../../store/dataUpdating';
 import ProTrackerIcon from "../../icons/pro-tracker";
 import FilterIcon from "../../icons/filter";
 import PlusIcon from "../../icons/plus";
@@ -15,12 +14,13 @@ import './Header.css';
 const b = block('header');
 const Header = () => {
   const { isMobile } = useAppContext();
-  const taskLists = useSelector(state => state.listDataUpdating).taskLists;
+  const { taskLists } = useSelector(state => state.listDataUpdating);
+  const dispatch = useDispatch();
+
+  const isLegentShown = !isMobile && !!taskLists.length && taskLists.find(({ tasksList }) => !!tasksList.length);
 
   const handleCreateListClick = () => {
-    store.dispatch({
-      type: CREATE_NEW_LIST,
-    });
+    dispatch(createNewList());
   };
 
   return (
@@ -54,12 +54,12 @@ const Header = () => {
             </Button>
           }
         </section>
-        {!isMobile && !!taskLists.length &&
+        {isLegentShown &&
           <section className={b('legend-container')}>
             <p className={b('status')}>Status</p>
             <p className={b('description')}>Task description</p>
             <p className={b('date')}>Date</p>
-            <p className={b('actions')}>Edit</p>
+            <p className={b('actions')}>Options</p>
           </section>
         }
       </header>

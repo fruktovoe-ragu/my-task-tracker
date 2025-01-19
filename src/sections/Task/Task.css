@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    flex-grow: 1; 
+    flex-grow: 1;
     align-self: stretch;
     min-height: 60px;
 }
@@ -53,10 +53,15 @@
 .task__actions-container {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 12px;
     height: 100%;
-    min-width: 32px;
-    width: 32px;
+    min-width: 52px;
+    width: 52px;
+}
+
+.task__delete-button {
+    background-color: #CA3737;
 }
 
 .task__date {
@@ -91,6 +96,10 @@
     .task__status-container {
         border-right: none;
         min-width: 0;
+        width: auto;
+    }
+
+    .task__actions-container {
         width: auto;
     }
 

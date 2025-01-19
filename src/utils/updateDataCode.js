@@ -8,6 +8,6 @@ const updateDataCodeArr = (entitiesArr, newItemId, newItemContent, updatedItemCo
     } else {
         return [...entitiesArr, newItemContent];
     }
-  };
+};
 
 export default updateDataCodeArr;

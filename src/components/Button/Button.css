@@ -1,6 +1,7 @@
 .button, button {
     display: flex;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
     border: none;
     position: relative;
@@ -17,7 +18,7 @@ button.button_disabled {
 button.button_disabled::before {
     content: none;
 }
-  
+
 .button::before, button::before {
     background: transparent;
     transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1) 0.03s;
@@ -27,7 +28,7 @@ button.button_disabled::before {
     left: 0;
     right: 0;
     bottom: 0;
-} 
+}
 
 .button_centered .button__inner {
     justify-content: center;
@@ -74,7 +75,7 @@ button.button_disabled::before {
 
 .button_theme_wide {
     border-radius: 12px;
-    display: flex;
+    justify-content: flex-start;
     height: 50px;
     padding: 0 12px;
     align-items: center;

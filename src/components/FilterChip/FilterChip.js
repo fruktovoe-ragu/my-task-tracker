@@ -1,8 +1,7 @@
 import React from 'react';
 import { block } from 'bem-cn';
-import { useSelector } from 'react-redux';
-import store from '../../store/store';
-import { SELECT_FILTER_CHIP } from "../../store/constants";
+import { useSelector, useDispatch } from 'react-redux';
+import { selectFilterChip } from '../../store/filtering';
 import CheckIcon from "../../icons/check";
 import './FilterChip.css';
 
@@ -12,18 +11,11 @@ const FilterChip = ({
     value = '',
     children,
 }) => {
-    const currentChipValue = useSelector(state => state.filtering).chosenStatusId;
+    const currentChipValue = useSelector(state => state.filtering.chosenStatusValue);
+    const dispatch = useDispatch();
 
     const handleClick = () => {
-        store.dispatch((dispatch, getState) => {
-            const prevValue = getState().filtering.chosenStatusId;
-            const newValue = prevValue === value ? '' : value;
-
-            dispatch({
-                type: SELECT_FILTER_CHIP,
-                payload: newValue,
-            })
-        });
+        dispatch(selectFilterChip(value));
     };
 
     return (
