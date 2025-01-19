@@ -29,11 +29,12 @@ const Task = ({
 
     const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
 
-    const mobileSideBlockTitle = editingTaskId === id ? 'Task editing' : 'Task description';
+    const isTaskEditing = editingTaskId === id;
+    const mobileSideBlockTitle = isTaskEditing ? 'Task editing' : 'Task description';
 
     // Handler functions
     // Start
-    const handlePreviewClick = () => {
+    const handlePreviewCancelClick = () => {
         setIsMobilePreviewOpened(prevState => !prevState);
     };
 
@@ -116,7 +117,7 @@ const Task = ({
         <li className={b({}).mix(className)}>
             {!isMobile &&
                 <>
-                    {editingTaskId === id ?
+                    {isTaskEditing ?
                         renderEditPanel() :
                         <div className={b('inner')}>
                             {renderStatusContainer()}
@@ -128,7 +129,7 @@ const Task = ({
                 </>
             }
             {isMobile &&
-                <div className={b('mobile-preview')} onClick={handlePreviewClick}>
+                <div className={b('mobile-preview')} onClick={handlePreviewCancelClick}>
                     {renderDescriptionContainer()}
                     <div className={b('bottom-section')}>
                         {renderDateContainer()}
@@ -137,8 +138,8 @@ const Task = ({
                 </div>
             }
             {isMobile && isMobilePreviewOpened &&
-                <MobileSideBlock titleContent={mobileSideBlockTitle} onCancelClick={handlePreviewClick}>
-                    {editingTaskId === id ?
+                <MobileSideBlock titleContent={mobileSideBlockTitle} onCancelClick={handlePreviewCancelClick}>
+                    {isTaskEditing ?
                         renderEditPanel() :
                         <div className={b('mobile-full-view')}>
                             {renderDescriptionContainer()}

@@ -61,7 +61,7 @@ const TaskList = ({
     }
 
     const handlerSubmitTaskClick = (content, taskId, date) => {
-        isMobile && setIsMobilePreviewOpened(prevState => !prevState);
+        isMobile && setIsMobilePreviewOpened(false);
 
         dispatch(submitTask({
             content: content,
@@ -91,7 +91,7 @@ const TaskList = ({
     // Start
     const renderTaskContainer = () => (
         <ul className={b('tasks-container')}>
-            {tasksList.map(({ description, id, status, date }, i) => {
+            {tasksList.map(({ description, id, status, date }) => {
                 const isTaskShown = currentChipValue === status || currentChipValue === '';
 
                 return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,6 +7,7 @@ import PlusIcon from "../../icons/plus";
 import EditPanel from "../../sections/EditPanel/EditPanel";
 import EmptyState from "../../sections/EmptyState/EmptyState";
 import TaskList from "../../sections/TaskList/TaskList";
+import MobileSideBlock from "../../sections/MobileSideBlock/MobileSideBlock";
 import Button from "../../components/Button/Button";
 import './Main.css';
 
@@ -16,6 +17,10 @@ const Main = () => {
   const { editingListId, taskLists } = useSelector(state => state.listDataUpdating);
   const dispatch = useDispatch();
 
+  const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
+
+  const isListEditing = editingListId === 0;
+
   const handleSubmitListClick = (value, id) => {
     dispatch(submitList({
       listContent: value, listId: id,
@@ -24,11 +29,17 @@ const Main = () => {
 
   const handleCreateListClick = () => {
     dispatch(createNewList());
+
+    setIsMobilePreviewOpened(true);
   };
 
   const handleCancelEditListClick = () => {
     dispatch(cancelEditList());
   };
+
+  const handlePreviewCancelClick = () => {
+    setIsMobilePreviewOpened(false);
+  }
 
   const renderEntryScreen = () => (
     editingListId === 0 ?
@@ -37,38 +48,48 @@ const Main = () => {
         <EditPanel
           onSubmitClick={handleSubmitListClick}
           onCancelClick={handleCancelEditListClick}
+          type="list"
         />
       </div> :
       <EmptyState onCreateListClick={handleCreateListClick} />
   );
 
+  const renderListEditPanel = () => (
+    <EditPanel
+      onSubmitClick={handleSubmitListClick}
+      onCancelClick={handleCancelEditListClick}
+      entityId={editingListId}
+      type="list"
+    />
+  );
+
   const renderListsContainer = () => (
     <div className={b('lists-container')}>
       {taskLists.map((list) => (
-          <TaskList
-            key={list.id}
-            taskListData={list}
-          />
-        ))}
-        {editingListId === 0 ?
-          <div className={b('future-list-container')}>
-            <EditPanel
-              onSubmitClick={handleSubmitListClick}
-              onCancelClick={handleCancelEditListClick}
-              entityId={editingListId}
-              type="list"
-            />
-          </div> :
-          <Button
-            className={b('create-list-button')}
-            theme={'wide'}
-            onClick={handleCreateListClick}
-            isCentered={isMobile}
-          >
-            <PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} />
-            Task list
-          </Button>
-        }
+        <TaskList
+          key={list.id}
+          taskListData={list}
+        />
+      ))}
+      {!isMobile && isListEditing ?
+        <div className={b('future-list-container')}>
+          {renderListEditPanel()}
+        </div> :
+        <Button
+          className={b('create-list-button')}
+          theme={'wide'}
+          onClick={handleCreateListClick}
+          isCentered={isMobile}
+        >
+          <PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} />
+          Task list
+        </Button>
+      }
+      {isMobile && isMobilePreviewOpened && isListEditing &&
+        <MobileSideBlock titleContent="Create a new task list" onCancelClick={handlePreviewCancelClick}>
+            {renderListEditPanel()}
+        </MobileSideBlock>
+      }
     </div>
   );
 

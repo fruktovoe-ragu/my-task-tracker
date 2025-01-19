@@ -6,6 +6,7 @@ import { editList, deleteList, cancelEditList, submitList } from '../../store/da
 import ChevronDownIcon from "../../icons/chevron-down";
 import ChevronUpIcon from "../../icons/chevron-up";
 import EditPanel from "../EditPanel/EditPanel";
+import MobileSideBlock from "../MobileSideBlock/MobileSideBlock";
 import Menu from "../../components/Menu/Menu";
 import './TaskListHead.css';
 
@@ -21,10 +22,13 @@ const TaskList = ({
 
     const [isTitleHovered, setIsTitleHovered] = useState(false);
     const [isMenuOpened, setIsMenuOpened] = useState(false);
+    const [isMobilePreviewOpened, setIsMobilePreviewOpened] = useState(false);
 
     const { listName, id: listId } = taskListData;
 
     const innerContainerRef = useRef(null);
+
+    const isListEditing = editingListId === listId;
 
     const handleClickOutside = e => {
         if (!innerContainerRef.current.contains(e.target)) {
@@ -53,12 +57,17 @@ const TaskList = ({
         setIsTitleHovered(isOpened);
     };
 
+    const handlePreviewCancelClick = () => {
+        setIsMobilePreviewOpened(false);
+      }
+
     // List handlers
     // Start
     const handleEditListClick = () => {
         dispatch(editList(listId));
 
         setIsMenuOpened(false);
+        setIsMobilePreviewOpened(true);
     };
 
     const handleCancelEditListClick = () => {
@@ -116,9 +125,14 @@ const TaskList = ({
             onKeyDown={onTitleClick}
             tabIndex="0"
         >
-            {editingListId === listId ?
+            {!isMobile && isListEditing ?
                 renderListEditPanel() :
                 renderListHeadInner()
+            }
+            {isMobile && isMobilePreviewOpened && isListEditing &&
+                <MobileSideBlock titleContent='List editing' onCancelClick={handlePreviewCancelClick}>
+                    {isListEditing && renderListEditPanel()}
+                </MobileSideBlock>
             }
             <div className={b('collapse-icon-container')}>
                 {isCollapseOpened ? <ChevronUpIcon /> : <ChevronDownIcon />}
