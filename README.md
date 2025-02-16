@@ -14,6 +14,10 @@ In the project directory, you can run:
 - cover components with Unit tests to provide early bug detection
 - enhance some interface features, for example, moving the list creation/editing to a separate screen, similar to how task creation/editing are handled on mobile resolutions
 
-3. Figma prototypes
+3. Links
 
+- Live Site URL
+https://my-task-tracker-neon.vercel.app/
+
+- Figma
 https://www.figma.com/design/euBDNkvXRrNzsmoPYeUg3L/Untitled?node-id=1243-4501&t=WxAbOAWQyIztT57q-1
