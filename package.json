@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "vercel-build": "echo '//npm.pkg.github.com/:_authToken=${NPM_TOKEN}' > .npmrc && npm install"
+    "vercel-build": "echo '//npm.pkg.github.com/:_authToken=${NPM_TOKEN}\n@fruktovoe-ragu:registry=https://npm.pkg.github.com' > .npmrc && npm install"
   },
   "eslintConfig": {
     "extends": [
@@ -46,5 +46,8 @@
   },
   "devDependencies": {
     "@radix-ui/react-select": "^2.1.2"
+  },
+  "publishConfig": {
+    "@fruktovoe-ragu:registry": "https://npm.pkg.github.com"
   }
 }
