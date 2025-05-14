@@ -6,7 +6,7 @@ import { createNewList } from '../../store/dataUpdating';
 import ProTrackerIcon from "../../icons/pro-tracker";
 import FilterIcon from "../../icons/filter";
 import PlusIcon from "../../icons/plus";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import Chip from "../../components/FilterChip/FilterChip";
 import { statuses } from "../../App";
 import './Header.css';
@@ -46,10 +46,8 @@ const Header = () => {
           {!isMobile &&
             <Button
               onClick={handleCreateListClick}
-              className={b('button')}
-              theme='primary'
+              icon={<PlusIcon />}
             >
-              <PlusIcon fill="#FFFFFF" />
               Task list
             </Button>
           }

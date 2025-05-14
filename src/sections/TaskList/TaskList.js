@@ -12,7 +12,7 @@ import EditPanel from "../../sections/EditPanel/EditPanel";
 import TaskListHead from "../TaskListHead/TaskListHead";
 import Task from "../Task/Task";
 import Collapse from "../../components/Collapse/Collapse";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './TaskList.css';
 
 const b = block('task-list');
@@ -136,10 +136,12 @@ const TaskList = ({
                             renderTaskEditPanel() :
                             <Button
                                 className={b('add-task-button')}
+                                variant="neutral"
+                                size="big"
+                                fullWidth
+                                icon={<PlusIcon />}
                                 onClick={handleCreateTaskClick}
-                                theme='wide'
                             >
-                                <PlusIcon />
                                 New task
                             </Button>
                         }

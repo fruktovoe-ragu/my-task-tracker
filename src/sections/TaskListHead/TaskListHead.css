@@ -50,7 +50,8 @@
     .task-list-head__inner {
         padding: 8px;
     }
-
+}
+@media (hover: none) and (pointer: coarse) {
     .task-list-head__actions-container {
         opacity: 1;
     }

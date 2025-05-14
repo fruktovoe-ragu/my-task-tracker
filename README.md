@@ -12,7 +12,6 @@ In the project directory, you can run:
 - use css preprocessor for better css organization
 - use TypeScript to provide type safety and early error detection
 - cover components with Unit tests to provide early bug detection
-- enhance some interface features, for example, moving the list creation/editing to a separate screen, similar to how task creation/editing are handled on mobile resolutions
 
 3. Links
 

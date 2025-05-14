@@ -7,7 +7,7 @@ import EditPanel from "../EditPanel/EditPanel";
 import MobileSideBlock from "../MobileSideBlock/MobileSideBlock";
 import SelectChip from "../../components/SelectChip/SelectChip";
 import Menu from "../../components/Menu/Menu";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import DeleteIcon from "../../icons/delete";
 import EditIcon from "../../icons/edit";
 import './Task.css';
@@ -81,15 +81,16 @@ const Task = ({
         <div className={b('actions-container')}>
             {isMobile ?
                 <>
-                    <Button onClick={handleEditTaskClick}>
-                        <EditIcon />
-                    </Button>
                     <Button
-                        className={b('delete-button')}
+                        variant="neutral"
+                        icon={<EditIcon />}
+                        onClick={handleEditTaskClick}
+                    />
+                    <Button
+                        variant="danger"
+                        icon={<DeleteIcon />}
                         onClick={handleDeleteTaskClick}
-                    >
-                        <DeleteIcon />
-                    </Button>
+                    />
                 </> :
                 <Menu
                     position="top-left"

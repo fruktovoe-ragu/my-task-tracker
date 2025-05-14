@@ -31,7 +31,7 @@ const TaskList = ({
     const isListEditing = editingListId === listId;
 
     const handleClickOutside = e => {
-        if (!innerContainerRef.current.contains(e.target)) {
+        if (innerContainerRef.current && !innerContainerRef.current.contains(e.target)) {
             setIsTitleHovered(false);
         }
     };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { block } from 'bem-cn';
-import Button from "../Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import DeleteIcon from "../../icons/delete";
 import EditIcon from "../../icons/edit";
 import MenuIcon from "../../icons/menu";
@@ -62,9 +62,11 @@ const Menu = ({
             ref={dropdownRef}
         >
             <div className={b('trigger')}>
-                <Button onClick={handleMenuClick}>
-                    <MenuIcon />
-                </Button>
+                <Button
+                    variant="neutral"
+                    icon={<MenuIcon />}
+                    onClick={handleMenuClick}
+                />
             </div>
             {isMenuOpened &&
                 <div className={b('dropdown-list', { position })}>

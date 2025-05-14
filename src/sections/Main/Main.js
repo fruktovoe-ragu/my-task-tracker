@@ -8,7 +8,7 @@ import EditPanel from "../../sections/EditPanel/EditPanel";
 import EmptyState from "../../sections/EmptyState/EmptyState";
 import TaskList from "../../sections/TaskList/TaskList";
 import MobileSideBlock from "../../sections/MobileSideBlock/MobileSideBlock";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './Main.css';
 
 const b = block('main');
@@ -75,15 +75,18 @@ const Main = () => {
         <div className={b('future-list-container')}>
           {renderListEditPanel()}
         </div> :
-        <Button
-          className={b('create-list-button')}
-          theme={'wide'}
-          onClick={handleCreateListClick}
-          isCentered={isMobile}
-        >
-          <PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} />
-          Task list
-        </Button>
+        <div className={b('button-container')}>
+          <Button
+            variant={isMobile ? "brand1" : "neutral"}
+            rank={isMobile ? "primary" : "secondary"}
+            size={isMobile ? "normal" : "big"}
+            fullWidth
+            icon={<PlusIcon fill={isMobile ? "#FFFFFF" : '#101D46'} />}
+            onClick={handleCreateListClick}
+          >
+            Task list
+          </Button>
+        </div>
       }
       {isMobile && isMobilePreviewOpened && isListEditing &&
         <MobileSideBlock titleContent="Create a new task list" onCancelClick={handlePreviewCancelClick}>

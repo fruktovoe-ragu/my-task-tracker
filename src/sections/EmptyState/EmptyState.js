@@ -2,7 +2,7 @@ import React from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
 import PlusIcon from "../../icons/plus";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './EmptyState.css';
 
 const b = block('empty-state');
@@ -22,12 +22,10 @@ const EmptyState = ({
                 </p>
             </div>
             <Button
-                className={b('button')}
-                theme='primary'
+                fullWidth={isMobile}
                 onClick={onCreateListClick}
-                isCentered={isMobile}
+                icon={<PlusIcon />}
             >
-                <PlusIcon fill="#FFFFFF" />
                 Task list
             </Button>
         </section>

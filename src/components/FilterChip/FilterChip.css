@@ -1,11 +1,26 @@
 .filter-chip {
     background: #EAEAEA;
     border-radius: 20px;
+    border: none;
+    cursor: pointer;
     font-size: 16px;
     font-weight: 500;
     height: 28px;
+    min-width: 69px;
     padding: 0 12px;
-    min-width: 69px;    
+    position: relative;
+}
+
+.filter-chip::before {
+    background: transparent;
+    border-radius: 20px;
+    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1) 0.03s;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .filter-chip:hover.filter-chip::before {

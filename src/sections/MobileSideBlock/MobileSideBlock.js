@@ -1,7 +1,7 @@
 import React from 'react';
 import { block } from 'bem-cn';
 import CancelIcon from "../../icons/cross";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './MobileSideBlock.css';
 
 const b = block('mobile-side-block');
@@ -17,11 +17,12 @@ const MobileSideBlock = ({
                 <div className={b('head')}>
                     <h2 className={b('title')}>{titleContent}</h2>
                     <Button
-                        className={b('cancel-button')}
+                        variant="neutral"
+                        size="small"
+                        rank="tertiary"
+                        icon={<CancelIcon />}
                         onClick={onCancelClick}
-                    >
-                        <CancelIcon />
-                    </Button>
+                    />
                 </div>
                 <div className={b('content')}>
                     {children}

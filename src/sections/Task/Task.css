@@ -60,10 +60,6 @@
     width: 52px;
 }
 
-.task__delete-button {
-    background-color: #CA3737;
-}
-
 .task__date {
     color: #808080;
     font-size: 14px;

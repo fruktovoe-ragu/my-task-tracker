@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState, useRef, } from 'react';
 import { block } from 'bem-cn';
 import { checkEventIsClickOrEnterPress } from '../../utils/checkEvent';
 import CrossIcon from "../../icons/cross";
-import WarningIcon from "../../icons/warning-full";
-import Button from "../Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './Textfield.css';
 
 const inputPlaceholder = 'Enter task list name';
@@ -27,7 +26,6 @@ const Textfield = ({
     errorMessage = '',
 }) => {
     const [inputValue, setInputValue] = useState(value);
-    const [isErrorDescriptionOpened, setIsErrorDescriptionOpened] = useState(true);
 
     const fieldNode = useRef();
 
@@ -73,16 +71,10 @@ const Textfield = ({
         const { current: field } = fieldNode;
 
         setInputValue('');
-        
+
         field?.focus();
         onChange?.(e);
     };
-
-    const handleWarningClick = e => {
-        e.stopPropagation();
-
-        setIsErrorDescriptionOpened(prevState => !prevState);
-    }
 
     const moveCaretAtEnd = e => {
         const valueLength = e.target.value.length;
@@ -125,33 +117,25 @@ const Textfield = ({
 
     return (
         <div className={b({ textarea }).mix(className)}>
-            {textarea ? 
+            {textarea ?
                 <textarea
                     {...textareaParams}
                     ref={getFieldNode}
                     onKeyDown={handleTextareaKeyDown}
-                /> : 
+                /> :
                 <input {...inputParams} ref={getFieldNode} onClick={handleInputClick} />
             }
-            <div className={b('actions')}>
-                {!!inputValue && 
+            {!!inputValue &&
+                <div className={b('actions')}>
                     <Button
-                        className={b('delete-button')}
+                        variant="neutral"
+                        size="small"
+                        icon={<CrossIcon />}
                         onClick={handleCancelClick}
-                    >
-                        <CrossIcon />
-                    </Button>
-                }
-                {!!errorMessage && 
-                    <Button
-                        className={b('warning-button')}
-                        onClick={handleWarningClick}
-                    >
-                        <WarningIcon />
-                    </Button>
-                }
-            </div>
-            {!!errorMessage && isErrorDescriptionOpened && 
+                    />
+                </div>
+            }
+            {!!errorMessage &&
                 <div className={b('error-text-popup')}>
                     {!!errorMessage && <p dangerouslySetInnerHTML={{ __html: errorMessage }} />}
                 </div>

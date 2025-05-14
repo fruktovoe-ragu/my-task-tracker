@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { block } from 'bem-cn';
 import useAppContext from '../../context/useAppContext';
 import Textfield from "../../components/Textfield/Textfield";
-import Button from "../../components/Button/Button";
+import { Button } from "@fruktovoe-ragu/symmetricci";
 import './EditPanel.css';
 
 const maxLimitExceededMessage = 'The maximum of letter limit was exceeded.';
@@ -105,16 +105,14 @@ const EditPanel = ({
                 <div className={b('actions-container')}>
                     <Button
                         className={b('save-button')}
-                        isCentered={isMobile}
-                        onClick={handleSaveClick}
-                        theme='primary'
                         disabled={!!invalidInputMessage}
+                        onClick={handleSaveClick}
                     >
                         Save
                     </Button>
                     <Button
+                        rank="secondary"
                         className={b('cancel-button')}
-                        isCentered={isMobile}
                         onClick={handleCancelClick}
                     >
                         Cancel

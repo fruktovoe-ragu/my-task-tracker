@@ -21,7 +21,6 @@ const FilterChip = ({
     return (
         <button
             className={b({ chosen: currentChipValue === value, theme: value }).mix(className)}
-            type="button"
             aria-pressed={currentChipValue === value}
             onClick={handleClick}
         >
